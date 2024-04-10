@@ -2,35 +2,36 @@ package telran.employees;
 
 import java.util.Objects;
 
-public class Employee implements Comparable<Employee>{
+public class Employee implements Comparable<Employee> {
+
 	private long id;
 	private int basicSalary;
 	private String department;
-	
+
 	public Employee(long id, int basicSalary, String department) {
+		super();
 		this.id = id;
 		this.basicSalary = basicSalary;
 		this.department = department;
 	}
-	@Override
-	public int compareTo(Employee o) {
-		// TODO 
-		//comparing according to id
-		return 0;
-	}
+
 	public long getId() {
 		return id;
 	}
+
 	public int getBasicSalary() {
 		return basicSalary;
 	}
+
 	public String getDepartment() {
 		return department;
 	}
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(id);
 	}
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -42,5 +43,9 @@ public class Employee implements Comparable<Employee>{
 		Employee other = (Employee) obj;
 		return id == other.id;
 	}
-	
+
+	@Override
+	public int compareTo(Employee o) {
+		return Long.compare(id, o.getId());
+	}
 }

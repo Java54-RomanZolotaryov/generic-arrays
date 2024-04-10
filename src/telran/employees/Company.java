@@ -1,55 +1,78 @@
 package telran.employees;
 
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import telran.util.Arrays;
-//SO far we don't consider optimization
-public class Company implements Iterable{
+
+public class Company implements Iterable<Employee>{
+	
+	private final Comparator<Employee> naturalOrderComparator = Employee::compareTo;
+	
 	private Employee[] employees;
-	public void addEmployee(Employee empl) {
-		//TODO adds new Employee to array of employees
-		//if an employee with id equaled to id of empl exists, then to throw IllegalStateException
-	}
-	public Employee getEmployee(long id) {
-		//TODO data about an employee with a given id value
-		//if the company doesn't have such employee, then return null
-		return null;
-	}
-	public Employee removeEmployee(long id) {
-		//TODO
-		//removes from the company an employee with a given id
-		//if such employee doesn't exist, throw NoSuchElementException
-		//returns reference to being removed employee
-		return null;
-	}
-	public int getDepartmentBudget(String department) {
-		//TODO
-		//returns sum of basic salary values for all employees of a given department
-		//if employees of a given department don't exist, returns 0
-		return -1;
-	}
+	
 	public Company(Employee[] employees) {
-		this.employees = Arrays.copy(employees);
+		super();
+		this.employees = Arrays.copy(Objects.requireNonNull(employees));
+		Arrays.bubbleSort(this.employees, naturalOrderComparator);
 	}
+	
+	public void addEmployee(Employee employee) {
+		Objects.requireNonNull(employees, "Employee cannot be null!");
+		if (Arrays.binarySearch(employees, employee, naturalOrderComparator) > -1) {
+			throw new IllegalStateException(String.format("Employee with '%d' already exists!", employee.getId()));
+		}
+		employees = Arrays.insertSorted(employees, employee, Employee::compareTo);
+	}
+	
+	public Employee getEmployee(long id) {
+		int indexOfElement = Arrays.indexOfSortedArray(employees, new Employee(id, 0, ""), naturalOrderComparator);
+		return indexOfElement < 0 ? null : employees[indexOfElement];
+	}
+	
+	public Employee removeEmployee(long id) {
+		int indexOfElement = Arrays.indexOfSortedArray(employees, new Employee(id, 0, ""), naturalOrderComparator);
+		if (indexOfElement < 0) {
+			throw new NoSuchElementException(String.format("Employee with '%d' doesn't exist!", id));
+		}
+		Employee removedEmployee = employees[indexOfElement];
+		employees = Arrays.removeByIndex(employees, indexOfElement);
+		return removedEmployee;
+	}
+	
+	public long getDepartmentBudget(String department) {
+		long sumOfDepartmentSalaries = 0L;
+		if (department != null && !department.isBlank()) {
+			for (Employee employee : this) {
+				if (employee.getDepartment().equals(department)) {
+					sumOfDepartmentSalaries += employee.getBasicSalary();
+				}
+			}
+		}
+		return sumOfDepartmentSalaries;
+	}
+
 	@Override
 	public Iterator<Employee> iterator() {
-		
-		return new CompanyIterator();
-	}
-	private class CompanyIterator implements Iterator<Employee> {
-//TODO
-		//iterating all employees in the ascending order of the ID values
-		@Override
-		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
-		}
+		return new Iterator<Employee>() {
 
-		@Override
-		public Employee next() {
-			// TODO Auto-generated method stub
-			return null;
-		}
-		
+			int index = 0;
+			
+			@Override
+			public boolean hasNext() {
+				return index < employees.length;
+			}
+
+			@Override
+			public Employee next() {
+				if (!hasNext()) {
+					throw new NoSuchElementException();
+				}
+				return employees[index++];
+			}
+			
+		};
 	}
 }
