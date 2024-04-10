@@ -42,7 +42,7 @@ class CompanyTest {
 
 	@Test
 	void testAddEmployee() {
-		assertThrowsExactly(NullPointerException.class, () -> company.addEmployee(null));
+		assertThrowsExactly(IllegalArgumentException.class, () -> company.addEmployee(null));
 		assertThrowsExactly(IllegalStateException.class, () -> company.addEmployee(empl1));
 		assertNull(company.getEmployee(ID4));
 		company.addEmployee(empl4);

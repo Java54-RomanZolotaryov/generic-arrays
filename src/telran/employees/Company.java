@@ -20,11 +20,15 @@ public class Company implements Iterable<Employee>{
 	}
 	
 	public void addEmployee(Employee employee) {
-		Objects.requireNonNull(employees, "Employee cannot be null!");
-		if (Arrays.binarySearch(employees, employee, naturalOrderComparator) > -1) {
+		if (employee == null) {
+			throw new IllegalArgumentException("Employee cannot be null!");
+		}
+		int insertionIndex = Arrays.binarySearch(employees, employee, naturalOrderComparator);
+		if (insertionIndex > -1) {
 			throw new IllegalStateException(String.format("Employee with '%d' already exists!", employee.getId()));
 		}
-		employees = Arrays.insertSorted(employees, employee, Employee::compareTo);
+		insertionIndex = -(insertionIndex + 1);
+		employees = Arrays.insert(employees, insertionIndex, employee);
 	}
 	
 	public Employee getEmployee(long id) {
