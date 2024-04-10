@@ -1,6 +1,8 @@
 package telran.util;
 
 import java.util.Comparator;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class Arrays {
@@ -45,6 +47,10 @@ public class Arrays {
 				}
 			}
 		}
+	}
+	
+	public static <T extends Comparable<T>> void bubbleSort(T[] array) {
+		bubbleSort(array, Comparator.naturalOrder());
 	}
 
 	private static <T> void swap(T[] array, int i, int j) {
@@ -101,5 +107,37 @@ public class Arrays {
 		T[] result = java.util.Arrays.copyOf(array, array.length + 1);
 		result[array.length] = element;
 		return result;
+	}
+	
+	public static <T> T[] removeByIndex(T[] array, int index) {
+		T[] newArray = java.util.Arrays.copyOf(array, array.length - 1);
+		System.arraycopy(array, 0, newArray, 0, index);
+		System.arraycopy(array, index + 1, newArray, index, array.length - index - 1);
+		return newArray;
+	}
+	
+	public static <T> T[] copy(T[] array) {
+		return java.util.Arrays.copyOf(array, array.length);
+	}
+	
+	public static <T> T[] insert (T[] array, int index, T element) {
+		T[] newArray = java.util.Arrays.copyOf(array, array.length + 1);
+		System.arraycopy(array, 0, newArray, 0, index);
+		System.arraycopy(array, index, newArray, index + 1, array.length - index);
+		newArray[index] = element;
+		return newArray;
+	}
+	
+	public static <T> T[] insertSorted (T[] array, T element, Comparator<T> comp) {
+		int insertionIndex = applyBitwiseComplementIfNegative((binarySearch(array, element, comp)));
+		return insert(array, insertionIndex, element);
+	}
+	
+	private static int applyBitwiseComplementIfNegative(int value) {
+		return value < 0 ? (~ value) : value;
+	}
+	
+	public static <T> int indexOfSortedArray(T[] array, T element, Comparator<T> comp) {
+		return binarySearch(array, element, comp);
 	}
 }

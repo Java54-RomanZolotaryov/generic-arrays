@@ -3,6 +3,7 @@ package telran.util.test;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Comparator;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 
@@ -96,16 +97,67 @@ class ArraysTests {
 		Integer[] actual = Arrays.add(numbers, 150);
 		assertArrayEquals(expected, actual);
 	}
+	
+	@Test
+	void personsSortTest() {
+		Person prs1 = new Person(123, 1985);
+		Person prs2 = new Person(120, 2000);
+		Person prs3 = new Person(128, 1999);
+		
+		Person[] persons = {
+				prs1, prs2, prs3
+		};
+		
+		Arrays.bubbleSort(persons);
+		
+		Person[] expected = {
+				new Person(120, 2000),
+				new Person(123, 1985),
+				new Person(128, 1999)
+		};
+		
+		Person[] expectedAge = {
+				new Person(120, 2000),
+				new Person(128, 1999),
+				new Person(123, 1985)
+		};
+		
+		assertArrayEquals(expected, persons);
+		Arrays.bubbleSort(persons, (p1, p2) -> Integer.compare(p2.birthYear, p1.birthYear));
+		assertArrayEquals(expectedAge, persons);
+	}
 
 }
 
-class Person {
+class Person implements Comparable<Person>{
 	long id;
 	int birthYear;
 
 	public Person(long id, int birthYear) {
 		this.id = id;
 		this.birthYear = birthYear;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(birthYear, id);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Person other = (Person) obj;
+		return birthYear == other.birthYear && id == other.id;
+	}
+
+	@Override
+	public int compareTo(Person o) {
+		return Long.compare(id, o.id);
 	}
 
 }
