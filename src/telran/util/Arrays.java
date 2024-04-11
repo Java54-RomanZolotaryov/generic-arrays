@@ -114,7 +114,6 @@ public class Arrays {
 	
 	public static <T> T[] removeByIndex(T[] array, int index) {
 		T[] newArray = java.util.Arrays.copyOf(array, array.length - 1);
-		System.arraycopy(array, 0, newArray, 0, index);
 		System.arraycopy(array, index + 1, newArray, index, array.length - index - 1);
 		return newArray;
 	}
@@ -125,7 +124,6 @@ public class Arrays {
 	
 	public static <T> T[] insert (T[] array, int index, T element) {
 		T[] newArray = java.util.Arrays.copyOf(array, array.length + 1);
-		System.arraycopy(array, 0, newArray, 0, index);
 		System.arraycopy(array, index, newArray, index + 1, array.length - index);
 		newArray[index] = element;
 		return newArray;
