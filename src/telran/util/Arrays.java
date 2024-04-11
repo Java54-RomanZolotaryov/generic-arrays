@@ -49,8 +49,11 @@ public class Arrays {
 		}
 	}
 	
-	public static <T extends Comparable<T>> void bubbleSort(T[] array) {
-		bubbleSort(array, Comparator.naturalOrder());
+	@SuppressWarnings("unchecked")
+	public static <T> void bubbleSort(T[] array) {
+		bubbleSort(array, (Comparator<T>) Comparator.naturalOrder());
+		//OR
+		//bubbleSort(array, (a, b) -> ((Comparable<T>)a).compareTo(b));
 	}
 
 	private static <T> void swap(T[] array, int i, int j) {
